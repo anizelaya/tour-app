@@ -474,9 +474,3 @@ with tabs[2]:
                     st.markdown(f"• **{exp['Nombre']}**: ${exp['Precio']:,} ARS por persona")
                     
             st.markdown('</div>', unsafe_allow_html=True)
-                
-                st.markdown("**Experiencias Disponibles:**")
-                for exp in b_data["Experiencias"]:
-                    st.markdown(f"• **{exp['Nombre']}**: ${exp['Precio']:,} ARS por persona")
-                    
-            st.markdown('</div>', unsafe_allow_html=True)
