@@ -6,7 +6,7 @@ from models.cliente import Cliente
 from models.reserva import Reserva
 
 # ==========================================
-# CONFIGURACIÓN DE PÁGINA Y ESTILOS BOUTIQUE
+# CONFIGURACIÓN DE PÁGINA Y ESTILOS RESPONSIVOS
 # ==========================================
 st.set_page_config(
     page_title="tour.app | Platform",
@@ -15,37 +15,165 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# CSS con forzado de contraste para Celulares y Modo Oscuro
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700&family=Playfair+Display:ital,wght@0,600;0,800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;800&display=swap');
 
-    .stApp { background-color: #FAFAFA !important; font-family: 'DM Sans', sans-serif !important; color: #2B2B2B !important; }
-    #MainMenu, footer, header, .stDeployButton {visibility: hidden; display:none;}
+    /* Forzar fondo claro general */
+    .stApp, .main { 
+        background-color: #FAFAFA !important; 
+        font-family: 'DM Sans', sans-serif !important; 
+        color: #2B2B2B !important; 
+    }
 
-    h1 { font-family: 'Playfair Display', serif !important; color: #3B1219 !important; font-size: 2.3rem !important; font-weight: 800 !important; }
-    h2, h3, h4 { font-family: 'Playfair Display', serif !important; color: #581845 !important; }
+    #MainMenu, footer, header, .stDeployButton { visibility: hidden; display: none; }
 
-    .app-card { background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #EAE6E1; box-shadow: 0 10px 25px rgba(88, 24, 69, 0.03); margin-bottom: 20px; }
-    .reserva-card { background: #FFFFFF; border-radius: 14px; border-left: 5px solid #581845; padding: 20px; margin-bottom: 15px; border-top: 1px solid #EAE6E1; border-right: 1px solid #EAE6E1; border-bottom: 1px solid #EAE6E1; }
-    .price-card { background: linear-gradient(135deg, #3B1219 0%, #581845 100%); color: #FFFFFF !important; border-radius: 14px; padding: 22px; margin-top: 15px; }
-    .price-card h4 { color: #F3E5D8 !important; font-size: 1.5rem !important; margin: 0 !important; }
-    .profit-card { background-color: #F2F9F6; border-left: 4px solid #27AE60; border-radius: 8px; padding: 14px 18px; color: #1E6B40; margin-top: 12px; }
-    
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; border-bottom: 1px solid #EAE6E1; }
-    .stTabs [aria-selected="true"] { background-color: #FFFFFF !important; color: #581845 !important; border-bottom: 3px solid #581845 !important; font-weight: 700 !important; }
-    .badge { background-color: #F8F1F4; color: #581845; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 6px; }
+    /* Tipografía de Títulos */
+    h1 { 
+        font-family: 'Playfair Display', serif !important; 
+        color: #3B1219 !important; 
+        font-size: 2.1rem !important; 
+        font-weight: 800 !important; 
+        margin-bottom: 0.2rem !important;
+    }
+    h2, h3, h4 { 
+        font-family: 'Playfair Display', serif !important; 
+        color: #581845 !important; 
+    }
+
+    /* Pestañas (Tabs) compatibles con Mobile/Modo Oscuro */
+    .stTabs [data-baseweb="tab-list"] { 
+        gap: 6px; 
+        border-bottom: 2px solid #EAE6E1; 
+        background-color: #FAFAFA !important;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 48px; 
+        border-radius: 8px 8px 0 0; 
+        padding: 0 16px;
+        font-family: 'DM Sans', sans-serif !important; 
+        color: #585858 !important; /* Color gris oscuro siempre visible */
+        background-color: #F0EDE8 !important;
+        font-weight: 600 !important;
+    }
+    .stTabs [aria-selected="true"] { 
+        background-color: #FFFFFF !important; 
+        color: #581845 !important; 
+        border-bottom: 3px solid #581845 !important; 
+        font-weight: 700 !important; 
+    }
+
+    /* Tarjetas principales */
+    .app-card { 
+        background: #FFFFFF !important; 
+        border-radius: 16px; 
+        padding: 20px; 
+        border: 1px solid #EAE6E1; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+        margin-bottom: 15px; 
+    }
+    .reserva-card { 
+        background: #FFFFFF !important; 
+        border-radius: 14px; 
+        border-left: 5px solid #581845; 
+        padding: 16px; 
+        margin-bottom: 15px; 
+        border-top: 1px solid #EAE6E1; 
+        border-right: 1px solid #EAE6E1; 
+        border-bottom: 1px solid #EAE6E1; 
+    }
+    .bodega-card { 
+        background: #FFFFFF !important; 
+        border-radius: 14px; 
+        border: 1px solid #EAE6E1; 
+        padding: 16px; 
+        margin-bottom: 15px; 
+    }
+
+    /* Caja de Precio Final y Ganancia */
+    .price-card { 
+        background: linear-gradient(135deg, #3B1219 0%, #581845 100%) !important; 
+        color: #FFFFFF !important; 
+        border-radius: 14px; 
+        padding: 18px; 
+        margin-top: 12px; 
+    }
+    .price-card h4 { color: #F3E5D8 !important; font-size: 1.4rem !important; margin: 0 !important; }
+    .price-card small { color: #D6C2B0 !important; }
+
+    .profit-card { 
+        background-color: #E8F8F5 !important; 
+        border-left: 4px solid #2ECC71; 
+        border-radius: 8px; 
+        padding: 12px 16px; 
+        color: #1E6B40 !important; 
+        margin-top: 10px; 
+        font-weight: 600;
+    }
+
+    /* Botones de Acción (Guardar / Procesar) */
+    .stButton>button {
+        background-color: #581845 !important;
+        color: #FFFFFF !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        border: none !important;
+    }
+    .stButton>button:hover {
+        background-color: #3B1219 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Entradas de Texto, Selectores y Textareas */
+    .stTextInput label, .stSelectbox label, .stNumberInput label, .stTextArea label {
+        color: #3B1219 !important;
+        font-weight: 600 !important;
+    }
+    .stTextInput>div>div>input, .stSelectbox>div>div, .stNumberInput>div>div>input {
+        border-radius: 10px !important; 
+        border: 1px solid #CFC8C0 !important; 
+        background-color: #FFFFFF !important;
+        color: #2B2B2B !important;
+    }
+    .stTextArea textarea {
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
+        border: 1px solid #CFC8C0 !important;
+        border-radius: 10px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Acordeones (Expanders) */
+    .streamlit-expanderHeader {
+        background-color: #F8F1F4 !important;
+        color: #581845 !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
+    }
+
+    .badge { 
+        background-color: #F8F1F4; 
+        color: #581845; 
+        padding: 4px 10px; 
+        border-radius: 20px; 
+        font-size: 0.8rem; 
+        font-weight: 600; 
+        margin-right: 6px; 
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Header
+# Header principal
 st.markdown("""
-    <div>
+    <div style="padding-bottom: 10px;">
         <h1>tour.app</h1>
-        <p style="color: #8C827A; margin: 0; font-size: 0.95rem;">Plataforma de Cotización y Logística B2B · Mendoza</p>
+        <p style="color: #8C827A; margin: 0; font-size: 0.9rem;">Plataforma de Cotización y Logística B2B · Mendoza</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Inicialización de bases de datos en sesión
+# Inicialización de datos
 if 'bodegas_db' not in st.session_state:
     st.session_state.bodegas_db = {
         "Finca Bandini": {
@@ -91,7 +219,6 @@ if 'bodegas_db' not in st.session_state:
         }
     }
 
-# Lista en memoria para almacenar las reservas guardadas
 if 'lista_reservas' not in st.session_state:
     st.session_state.lista_reservas = []
 
@@ -118,7 +245,6 @@ with tabs[0]:
             
         hospedaje = st.text_input("Punto de Retiro / Hospedaje", "Hotel Park Hyatt Mendoza")
         
-        # Instanciamos los Objetos
         obj_cliente = Cliente(nombre=cliente_nombre, idioma=idioma_cliente, hospedaje=hospedaje)
         obj_reserva = Reserva(cliente=obj_cliente, fecha=fecha_tour, zona=zona_elegida, cant_pax=cant_pax)
         
@@ -197,7 +323,6 @@ with tabs[0]:
                 idx_exp_3 = st.selectbox("Exp 3", range(len(exp_nombres_3)), format_func=lambda x: exp_nombres_3[x], key="e3", label_visibility="collapsed")
                 obj_reserva.paradas.append((bodega_3, exp_b3[idx_exp_3]["Nombre"], exp_b3[idx_exp_3]["Precio"]))
 
-        # Cálculo de Totales de la Reserva
         obj_reserva.calcular_totales(tipo_margen, valor_margen)
         
         km_1 = bodegas_zona[bodega_1]["Km"] if bodega_1 in bodegas_zona else 0
@@ -217,10 +342,9 @@ with tabs[0]:
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # BOTÓN PRINCIPAL: GUARDAR LA RESERVA EN LA AGENDA
         if st.button("💾 Guardar y Registrar Reserva", use_container_width=True):
             st.session_state.lista_reservas.append(obj_reserva)
-            st.success(f"¡Reserva de {obj_reserva.cliente.nombre} guardada con éxito en la Agenda!")
+            st.success(f"¡Reserva de {obj_reserva.cliente.nombre} registrada!")
             
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -278,14 +402,14 @@ Auditoría de recorrido: ~{km_totales} km totales
         st.text_area("Copia para Chofer:", msg_chofer, height=260)
 
 # ------------------------------------------
-# TAB 2: AGENDA Y GESTIÓN DE RESERVAS (CRM)
+# TAB 2: AGENDA Y GESTIÓN DE RESERVAS
 # ------------------------------------------
 with tabs[1]:
     st.markdown("### Agenda & Gestión de Reservas")
-    st.caption("Administración de solicitudes cargadas, actualización de pagos y seguimiento de estados.")
+    st.caption("Administración de solicitudes cargadas y seguimiento de estados.")
     
     if not st.session_state.lista_reservas:
-        st.info("Aún no hay reservas guardadas. Cotizá una propuesta en la primera pestaña y apretá el botón 'Guardar y Registrar Reserva'.")
+        st.info("Aún no hay reservas guardadas. Cotizá una propuesta en la primera pestaña y hacé clic en 'Guardar y Registrar Reserva'.")
     else:
         for idx, res in enumerate(st.session_state.lista_reservas):
             st.markdown('<div class="reserva-card">', unsafe_allow_html=True)
@@ -302,7 +426,6 @@ with tabs[1]:
                 st.markdown(f"🚘 **Chofer:** {res.chofer_nombre} (${res.monto_chofer:,.0f})")
                 
             with col_r3:
-                # Controles para cambiar estado en tiempo real
                 res.estado_reserva = st.selectbox(
                     "Estado Reserva", 
                     ["A Confirmar", "Reservado", "Cancelado"], 
@@ -311,8 +434,8 @@ with tabs[1]:
                 )
                 res.estado_pago = st.selectbox(
                     "Estado Pago", 
-                    ["Pendiente", "Señado (50%)", "Saldado (100%)"], 
-                    index=["Pendiente", "Señado (50%)", "Saldado (100%)"].index(res.estado_pago),
+                    ["Pendiente", "Saldado (100%)"], 
+                    index=["Pendiente", "Saldado (100%)"].index(res.estado_pago if res.estado_pago in ["Pendiente", "Saldado (100%)"] else "Pendiente"),
                     key=f"pag_est_{idx}"
                 )
                 
