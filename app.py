@@ -15,15 +15,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# CSS que anula el Dark Mode del celular y fuerza alto contraste
+# Estilos globales agresivos contra el Dark Mode móvil
 st.markdown("""
     <style>
-    /* Forzar modo claro a nivel navegador */
-    :root {
-        color-scheme: light !important;
-    }
+    :root { color-scheme: light !important; }
 
-    /* Fondo general */
     .stApp, .main, [data-testid="stAppViewContainer"] { 
         background-color: #FAFAFA !important; 
         color: #1A1A1A !important; 
@@ -31,129 +27,105 @@ st.markdown("""
 
     #MainMenu, footer, header, .stDeployButton { visibility: hidden; display: none; }
 
-    /* Encabezados */
     h1 { 
         font-family: 'serif' !important; 
         color: #3B1219 !important; 
         font-size: 2rem !important; 
         font-weight: 800 !important; 
     }
-    h2, h3, h4, p, span, label { 
-        color: #2B2B2B !important; 
-    }
+    h2, h3, h4, p, span, label { color: #2B2B2B !important; }
 
-    /* Pestañas (Tabs) visibles en celular */
+    /* Pestañas (Tabs) */
     .stTabs [data-baseweb="tab-list"] { 
         gap: 4px; 
         background-color: #EAE6E1 !important;
-        padding: 4px;
-        border-radius: 10px;
+        padding: 5px !important;
+        border-radius: 12px !important;
     }
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px !important; 
-        padding: 8px 12px !important;
-        color: #4A4A4A !important; /* Texto visible */
-        background-color: transparent !important;
+        background-color: #F0EDE8 !important;
+        border-radius: 8px !important;
+        padding: 10px 16px !important;
+    }
+    .stTabs [data-baseweb="tab"] * {
+        color: #4A4A4A !important;
         font-weight: 700 !important;
     }
-    .stTabs [aria-selected="true"] { 
-        background-color: #581845 !important; 
-        color: #FFFFFF !important; /* Texto seleccionado blanco */
+    .stTabs [aria-selected="true"] {
+        background-color: #581845 !important;
     }
-    .stTabs [aria-selected="true"] span {
+    .stTabs [aria-selected="true"] * {
         color: #FFFFFF !important;
+        font-weight: 800 !important;
     }
 
     /* Contenedores y Tarjetas */
     .app-card { 
-        background: #FFFFFF !important; 
+        background-color: #FFFFFF !important; 
+        border: 1px solid #D1C7BD !important; 
         border-radius: 16px; 
-        padding: 18px; 
-        border: 1px solid #D1C7BD !important; 
-        margin-bottom: 15px; 
+        padding: 20px; 
+        margin-bottom: 20px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
     }
+    
     .reserva-card, .bodega-card { 
-        background: #FFFFFF !important; 
-        border-radius: 14px; 
+        background-color: #FFFFFF !important; 
         border: 1px solid #D1C7BD !important; 
-        padding: 16px; 
+        border-radius: 14px; 
+        padding: 18px; 
         margin-bottom: 15px; 
     }
 
     /* Tarjeta de Precio */
     .price-card { 
-        background: #581845 !important; 
-        color: #FFFFFF !important; 
+        background-color: #581845 !important; 
         border-radius: 14px; 
-        padding: 18px; 
-        margin-top: 12px; 
+        padding: 20px; 
+        margin-top: 15px; 
     }
-    .price-card h4, .price-card small { 
-        color: #FFFFFF !important; 
-    }
+    .price-card * { color: #FFFFFF !important; }
 
     .profit-card { 
         background-color: #E8F8F5 !important; 
-        border-left: 5px solid #2ECC71 !important; 
+        border-left: 6px solid #2ECC71 !important; 
         border-radius: 8px; 
-        padding: 12px; 
-        color: #114B29 !important; 
+        padding: 14px; 
+        margin-top: 12px; 
+    }
+    .profit-card * { 
+        color: #0E4B26 !important; 
+        font-weight: 700 !important; 
+    }
+
+    /* Formulario e Inputs */
+    div[data-baseweb="select"] > div {
+        background-color: #FFFFFF !important;
+        border: 2px solid #581845 !important;
+        border-radius: 10px !important;
+    }
+    div[data-baseweb="select"] * {
+        color: #1A1A1A !important;
         font-weight: 700 !important;
     }
-
-    /* Forzar visibilidad en Desplegables (Selectbox) e Inputs */
-    .stSelectbox div[data-baseweb="select"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #A0958B !important;
-        border-radius: 8px !important;
-    }
-    .stSelectbox div[data-baseweb="select"] * {
-        color: #1A1A1A !important; /* Texto de la opción seleccionada */
-        font-weight: 600 !important;
-    }
-    
-    .stTextInput input, .stNumberInput input {
+    input, textarea {
         background-color: #FFFFFF !important;
         color: #1A1A1A !important;
-        border: 1px solid #A0958B !important;
-        border-radius: 8px !important;
+        border: 2px solid #8C827A !important;
+        border-radius: 10px !important;
         font-weight: 600 !important;
     }
 
-    /* Radio buttons (Porcentaje vs Fijo) */
-    .stRadio label, .stCheckbox label {
-        color: #1A1A1A !important;
-        font-weight: 600 !important;
-    }
-
-    /* Botón de Guardar */
-    .stButton>button {
+    .stButton > button {
         background-color: #581845 !important;
-        color: #FFFFFF !important;
         border-radius: 10px !important;
         padding: 12px 20px !important;
-        font-weight: 700 !important;
-        width: 100% !important;
+        border: none !important;
     }
-    .stButton>button p {
+    .stButton > button * {
         color: #FFFFFF !important;
-    }
-
-    /* Acordeón de mensajes */
-    .streamlit-expanderHeader {
-        background-color: #F0E6EC !important;
-        border-radius: 8px !important;
-    }
-    .streamlit-expanderHeader * {
-        color: #581845 !important;
         font-weight: 700 !important;
-    }
-
-    .stTextArea textarea {
-        background-color: #FFFFFF !important;
-        color: #1A1A1A !important;
-        border: 1px solid #A0958B !important;
-        font-weight: 500 !important;
+        font-size: 1rem !important;
     }
 
     .badge { 
@@ -171,12 +143,12 @@ st.markdown("""
 # Encabezado
 st.markdown("""
     <div style="padding-bottom: 10px;">
-        <h1>tour.app</h1>
-        <p style="color: #666666; margin: 0; font-size: 0.9rem;">Plataforma de Cotización B2B · Mendoza</p>
+        <h1 style="color: #3B1219 !important;">tour.app</h1>
+        <p style="color: #666666 !important; margin: 0; font-size: 0.95rem;">Plataforma de Cotización B2B · Mendoza</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Base de datos
+# Base de Datos inicial
 if 'bodegas_db' not in st.session_state:
     st.session_state.bodegas_db = {
         "Finca Bandini": {
@@ -225,7 +197,7 @@ if 'bodegas_db' not in st.session_state:
 if 'lista_reservas' not in st.session_state:
     st.session_state.lista_reservas = []
 
-tabs = st.tabs(["🍷 Cotizador B2B", "📋 Agenda de Reservas", "📖 Catálogo de Bodegas"])
+tabs = st.tabs(["🍷 Cotizador B2B", "📋 Agenda de Reservas", "📖 Catálogo de Bodegas", "⚙️ Panel Admin"])
 
 # ------------------------------------------
 # TAB 1: COTIZADOR & ARMADOR
@@ -465,7 +437,7 @@ with tabs[2]:
                 st.markdown(f"### {b_nombre}")
                 st.markdown(f"📍 **Zona:** {b_data['Zona']} | 🛣️ **Distancia estim. desde Ciudad:** {b_data['Km']} km")
                 
-                tags_html = "".join([f'<span class="badge">{tag}</span>' for tag in b_data.get("Tags", [])])
+                tags_html = "".join([f'<span class="badge" style="color:#581845 !important;">{tag}</span>' for tag in b_data.get("Tags", [])])
                 st.markdown(tags_html, unsafe_allow_html=True)
                 st.markdown("<br>", unsafe_allow_html=True)
                 
@@ -474,3 +446,82 @@ with tabs[2]:
                     st.markdown(f"• **{exp['Nombre']}**: ${exp['Precio']:,} ARS por persona")
                     
             st.markdown('</div>', unsafe_allow_html=True)
+
+# ------------------------------------------
+# TAB 4: PANEL DE ADMINISTRACIÓN DE BODEGAS
+# ------------------------------------------
+with tabs[3]:
+    st.markdown("### ⚙️ Panel de Administración")
+    st.caption("Gestión interna de catálogo, carga de nuevas bodegas y actualización de tarifas.")
+    
+    clave_admin = st.text_input("Ingresá la contraseña de administradora:", type="password")
+    
+    # Contraseña simple para el prototipo: "zelaya123"
+    if clave_admin == "zelaya123":
+        st.success("Acceso concedido como Administradora.")
+        
+        col_adm1, col_adm2 = st.columns([1.2, 1], gap="large")
+        
+        with col_adm1:
+            st.markdown('<div class="app-card">', unsafe_allow_html=True)
+            st.markdown("#### ➕ Cargar Nueva Bodega")
+            
+            nuevo_nombre = st.text_input("Nombre de la Bodega (ej. Bodega Catena Zapata)")
+            nueva_zona = st.selectbox("Zona / Circuito", ["Luján y Maipú", "Valle de Uco Corto", "Valle de Uco Largo"])
+            nuevos_km = st.number_input("Distancia aprox. desde Ciudad (km)", value=30, step=5)
+            nueva_imagen = st.text_input("URL de Foto/Imagen", "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=600")
+            nuevos_tags_str = st.text_input("Etiquetas / Tags (separadas por coma)", "Alta Gama, Vistas Montaña, Sunset")
+            
+            st.markdown("---")
+            st.markdown("**Experiencias de la nueva bodega:**")
+            
+            # Formulario para 3 experiencias iniciales
+            exp1_nom = st.text_input("Nombre Exp 1", "Degustación Clásica")
+            exp1_pre = st.number_input("Precio Exp 1 ($)", value=15000, step=1000)
+            
+            exp2_nom = st.text_input("Nombre Exp 2", "Almuerzo Maridado")
+            exp2_pre = st.number_input("Precio Exp 2 ($)", value=45000, step=1000)
+            
+            if st.button("➕ Guardar Bodega en Catálogo", use_container_width=True):
+                if nuevo_nombre.strip() != "":
+                    tags_lista = [t.strip() for t in nuevos_tags_str.split(",") if t.strip() != ""]
+                    
+                    st.session_state.bodegas_db[nuevo_nombre] = {
+                        "Zona": nueva_zona,
+                        "Km": nuevos_km,
+                        "Imagen": nueva_imagen,
+                        "Tags": tags_lista,
+                        "Experiencias": [
+                            {"Nombre": exp1_nom, "Precio": exp1_pre},
+                            {"Nombre": exp2_nom, "Precio": exp2_pre}
+                        ]
+                    }
+                    st.success(f"¡{nuevo_nombre} cargada con éxito! Ya está disponible en el Cotizador y Catálogo.")
+                else:
+                    st.error("Por favor ingresá un nombre válido para la bodega.")
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+        with col_adm2:
+            st.markdown('<div class="app-card">', unsafe_allow_html=True)
+            st.markdown("#### ✏️ Actualizar Tarifas de Bodega Existente")
+            
+            bodega_sel_edit = st.selectbox("Seleccionar Bodega a Modificar", list(st.session_state.bodegas_db.keys()))
+            
+            if bodega_sel_edit:
+                datos_b = st.session_state.bodegas_db[bodega_sel_edit]
+                st.markdown(f"**Editando:** {bodega_sel_edit} ({datos_b['Zona']})")
+                
+                exp_modificadas = []
+                for i, exp in enumerate(datos_b["Experiencias"]):
+                    st.markdown(f"• **{exp['Nombre']}**")
+                    nuevo_p = st.number_input(f"Nuevo Precio ($) para {exp['Nombre']}", value=int(exp['Precio']), step=1000, key=f"edit_exp_{i}")
+                    exp_modificadas.append({"Nombre": exp["Nombre"], "Precio": nuevo_p})
+                    
+                if st.button("💾 Guardar Precios Actualizados", use_container_width=True):
+                    st.session_state.bodegas_db[bodega_sel_edit]["Experiencias"] = exp_modificadas
+                    st.success(f"¡Precios de {bodega_sel_edit} actualizados correctamente!")
+                    
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+    elif clave_admin != "":
+        st.error("Contraseña incorrecta. Intentá nuevamente.")
