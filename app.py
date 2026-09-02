@@ -1,40 +1,104 @@
-import streamlit as st
-import datetime
+# ------------------------------------------
+# TAB 4: PANEL DE ADMINISTRACIÓN DE BODEGAS
+# ------------------------------------------
+with tabs[3]:
+    st.markdown("### ⚙️ Panel de Administración")
+    st.caption("Gestión interna de catálogo, carga de nuevas bodegas, experiencias y actualización de tarifas.")
+    
+    clave_admin = st.text_input("Ingresá la contraseña de administradora:", type="password")
+    
+    if clave_admin == "zelaya123":
+        st.success("Acceso concedido como Administradora.")
+        
+        col_adm1, col_adm2 = st.columns([1.2, 1], gap="large")
+        
+        # COLUMNA 1: CARGAR BODEGA NUEVA
+        with col_adm1:
+            st.markdown('<div class="app-card">', unsafe_allow_html=True)
+            st.markdown("#### ➕ Cargar Nueva Bodega")
+            
+            nuevo_nombre = st.text_input("Nombre de la Bodega (ej. Bodega Catena Zapata)")
+            nueva_zona = st.selectbox("Zona / Circuito", ["Luján y Maipú", "Valle de Uco Corto", "Valle de Uco Largo"])
+            nuevos_km = st.number_input("Distancia aprox. desde Ciudad (km)", value=30, step=5)
+            nueva_imagen = st.text_input("URL de Foto/Imagen", "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=600")
+            nuevos_tags_str = st.text_input("Etiquetas / Tags (separadas por coma)", "Alta Gama, Vistas Montaña, Sunset")
+            
+            st.markdown("---")
+            st.markdown("**Experiencias iniciales:**")
+            
+            exp1_nom = st.text_input("Nombre Exp 1", "Degustación Clásica")
+            exp1_pre = st.number_input("Precio Exp 1 ($)", value=15000, step=1000)
+            
+            exp2_nom = st.text_input("Nombre Exp 2", "Almuerzo Maridado")
+            exp2_pre = st.number_input("Precio Exp 2 ($)", value=45000, step=1000)
+            
+            if st.button("➕ Guardar Bodega en Catálogo", use_container_width=True):
+                if nuevo_nombre.strip() != "":
+                    tags_lista = [t.strip() for t in nuevos_tags_str.split(",") if t.strip() != ""]
+                    
+                    st.session_state.bodegas_db[nuevo_nombre] = {
+                        "Zona": nueva_zona,
+                        "Km": nuevos_km,
+                        "Imagen": nueva_imagen,
+                        "Tags": tags_lista,
+                        "Experiencias": [
+                            {"Nombre": exp1_nom, "Precio": exp1_pre},
+                            {"Nombre": exp2_nom, "Precio": exp2_pre}
+                        ]
+                    }
+                    st.success(f"¡{nuevo_nombre} cargada con éxito!")
+                else:
+                    st.error("Por favor ingresá un nombre válido para la bodega.")
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+        # COLUMNA 2: MODIFICAR PRECIOS Y AGREGAR NUEVAS EXPERIENCIAS
+        with col_adm2:
+            st.markdown('<div class="app-card">', unsafe_allow_html=True)
+            st.markdown("#### ✏️ Editar Bodega / Sumar Experiencias")
+            
+            bodega_sel_edit = st.selectbox("Seleccionar Bodega", list(st.session_state.bodegas_db.keys()))
+            
+            if bodega_sel_edit:
+                datos_b = st.session_state.bodegas_db[bodega_sel_edit]
+                st.markdown(f"**Bodega:** {bodega_sel_edit} ({datos_b['Zona']})")
+                
+                # 1. Modificar Precios Existentes
+                st.markdown("---")
+                st.markdown("**Precios de Experiencias Existentes:**")
+                exp_modificadas = []
+                for i, exp in enumerate(datos_b["Experiencias"]):
+                    nuevo_p = st.number_input(
+                        f"Precio para '{exp['Nombre']}' ($)", 
+                        value=int(exp['Precio']), 
+                        step=1000, 
+                        key=f"edit_exp_{i}"
+                    )
+                    exp_modificadas.append({"Nombre": exp["Nombre"], "Precio": nuevo_p})
+                    
+                if st.button("💾 Actualizar Precios Existentes", use_container_width=True):
+                    st.session_state.bodegas_db[bodega_sel_edit]["Experiencias"] = exp_modificadas
+                    st.success(f"¡Precios de {bodega_sel_edit} actualizados!")
 
-# Importamos las clases definidas en la carpeta models
-from models.cliente import Cliente
-from models.reserva import Reserva
-
-# ==========================================
-# CONFIGURACIÓN DE PÁGINA Y ESTILOS FORZADOS
-# ==========================================
-st.set_page_config(
-    page_title="tour.app | Platform",
-    page_icon="🍷",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-
-# Estilos globales agresivos contra el Dark Mode móvil
-st.markdown("""
-    <style>
-    :root { color-scheme: light !important; }
-
-    .stApp, .main, [data-testid="stAppViewContainer"] { 
-        background-color: #FAFAFA !important; 
-        color: #1A1A1A !important; 
-    }
-
-    #MainMenu, footer, header, .stDeployButton { visibility: hidden; display: none; }
-
-    h1 { 
-        font-family: 'serif' !important; 
-        color: #3B1219 !important; 
-        font-size: 2rem !important; 
-        font-weight: 800 !important; 
-    }
-    h2, h3, h4, p, span, label { color: #2B2B2B !important; }
-
+                # 2. Agregar una Nueva Experiencia a la Bodega
+                st.markdown("---")
+                st.markdown("**➕ Agregar Nueva Experiencia a esta Bodega:**")
+                nueva_exp_nombre = st.text_input("Nombre de la nueva experiencia (ej. Picnic en Viñedos)", key="new_exp_name")
+                nueva_exp_precio = st.number_input("Precio ($)", value=20000, step=1000, key="new_exp_price")
+                
+                if st.button("✨ Añadir Experiencia a la Bodega", use_container_width=True):
+                    if nueva_exp_nombre.strip() != "":
+                        st.session_state.bodegas_db[bodega_sel_edit]["Experiencias"].append({
+                            "Nombre": nueva_exp_nombre,
+                            "Precio": nueva_exp_precio
+                        })
+                        st.success(f"¡Se agregó '{nueva_exp_nombre}' a {bodega_sel_edit}!")
+                    else:
+                        st.warning("Escribí el nombre de la nueva experiencia antes de guardar.")
+                        
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+    elif clave_admin != "":
+        st.error("Contraseña incorrecta. Intentá nuevamente.")
     /* Pestañas (Tabs) */
     .stTabs [data-baseweb="tab-list"] { 
         gap: 4px; 
